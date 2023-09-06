@@ -4,7 +4,9 @@ import User from '../models/user.model';
 
 export const getUsers = async (req: Request, res: Response) => {
 	try {
-		const users = await User.find({ state: true }).lean();
+		const users = await User.find({ state: true })
+			.select('-password -createdAt -updatedAt -__v -state')
+			.lean();
 
 		return res.json({
 			ok: true,
@@ -19,7 +21,9 @@ export const getUser = async (req: Request, res: Response) => {
 	const { id } = req.params;
 
 	try {
-		const user = await User.findById(id).lean();
+		const user = await User.findById(id)
+			.select('-password -createdAt -updatedAt -__v -state')
+			.lean();
 
 		return res.json({
 			ok: true,
@@ -49,7 +53,9 @@ export const updateUser = async (req: Request, res: Response) => {
 	const { id } = req.params;
 
 	try {
-		const user = await User.findByIdAndUpdate(id, req.body, { new: true }).lean();
+		const user = await User.findByIdAndUpdate(id, req.body, { new: true })
+			.select('-password -createdAt -updatedAt -__v -state')
+			.lean();
 
 		return res.json({
 			ok: true,
