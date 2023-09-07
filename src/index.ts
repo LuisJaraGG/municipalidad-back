@@ -6,6 +6,7 @@ import { dbConnected } from './database/db';
 
 import userRouter from './routes/user.route';
 import authRouter from './routes/auth.route';
+import roleRouter from './routes/role.route';
 
 dotenv.config();
 
@@ -18,7 +19,7 @@ const app = express();
 dbConnected();
 
 //Middlewares
-app.use(cors(corsOptions));
+app.use(cors(process.env.NODE_ENV !== 'development' ? corsOptions : {}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use(
@@ -32,6 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 //Rutas
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/role', roleRouter);
 
 //Servidor
 app.listen(process.env.PORT, () => {

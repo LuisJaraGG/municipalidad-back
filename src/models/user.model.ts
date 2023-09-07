@@ -29,13 +29,9 @@ const UserSchema = new Schema(
 			default: true,
 		},
 		role: {
-			type: String,
+			type: Schema.Types.ObjectId,
+			ref: 'Role',
 			required: [true, 'El rol es obligatorio'],
-			enum: {
-				values: ['ADMIN', 'SUPER-USER', 'USER'],
-				message: '{VALUE} no es un rol válido',
-			},
-			default: 'USER',
 		},
 	},
 	{
@@ -61,8 +57,7 @@ UserSchema.pre('save', function (next) {
 });
 
 UserSchema.methods.toJSON = function () {
-	const { __v, password, _id, ...user } = this.toObject();
-	user.id = _id;
+	const { __v, password, ...user } = this.toObject();
 	return user;
 };
 

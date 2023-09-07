@@ -4,8 +4,9 @@ import User from '../models/user.model';
 
 export const getUsers = async (req: Request, res: Response) => {
 	try {
-		const users = await User.find({ state: true })
-			.select('-password -createdAt -updatedAt -__v -state')
+		const users = await User.find()
+			.select('-password -createdAt -updatedAt -__v')
+			.populate('role', 'name')
 			.lean();
 
 		return res.json({
@@ -22,7 +23,8 @@ export const getUser = async (req: Request, res: Response) => {
 
 	try {
 		const user = await User.findById(id)
-			.select('-password -createdAt -updatedAt -__v -state')
+			.select('-password -createdAt -updatedAt -__v')
+			.populate('role', 'name')
 			.lean();
 
 		return res.json({
@@ -36,9 +38,7 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const createUser = async (req: Request, res: Response) => {
 	try {
-		const user = new User(req.body);
-
-		await user.save();
+		const user = await User.create(req.body);
 
 		return res.json({
 			ok: true,
@@ -51,11 +51,21 @@ export const createUser = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
 	const { id } = req.params;
+	const { password } = req.body;
 
 	try {
-		const user = await User.findByIdAndUpdate(id, req.body, { new: true })
-			.select('-password -createdAt -updatedAt -__v -state')
-			.lean();
+		const user = await User.findById(id);
+
+		user!.name = req.body.name;
+		user!.email = req.body.email;
+		user!.imageURL = req.body.imageURL;
+		user!.role = req.body.role;
+
+		if (password && password !== '') {
+			user!.password = req.body.password;
+		}
+
+		await user?.save();
 
 		return res.json({
 			ok: true,
@@ -70,7 +80,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 	const { id } = req.params;
 
 	try {
-		await User.findByIdAndDelete(id).lean();
+		await User.findByIdAndUpdate(id, { state: false });
 
 		return res.json({
 			ok: true,
