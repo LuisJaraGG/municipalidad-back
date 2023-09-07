@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const role_controller_1 = require("../controllers/role.controller");
+const role_middleware_1 = require("../middlewares/role.middleware");
+const jwt_verify_token_middleware_1 = require("../middlewares/jwt-verify-token.middleware");
+const router = (0, express_1.Router)();
+router.use(jwt_verify_token_middleware_1.verifyJWT);
+router.post('/', role_middleware_1.createRoleValidator, role_controller_1.createRole);
+router.get('/', role_controller_1.getRoles);
+router.get('/:id', role_middleware_1.getRoleValidator, role_controller_1.getRole);
+router.put('/:id', role_middleware_1.updateRoleValidator, role_controller_1.updateRole);
+router.delete('/:id', role_middleware_1.deleteRoleValidator, role_controller_1.deleteRole);
+exports.default = router;

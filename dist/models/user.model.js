@@ -49,13 +49,9 @@ const UserSchema = new mongoose_1.Schema({
         default: true,
     },
     role: {
-        type: String,
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Role',
         required: [true, 'El rol es obligatorio'],
-        enum: {
-            values: ['ADMIN', 'SUPER-USER', 'USER'],
-            message: '{VALUE} no es un rol válido',
-        },
-        default: 'USER',
     },
 }, {
     timestamps: true,
@@ -76,8 +72,7 @@ UserSchema.pre('save', function (next) {
     });
 });
 UserSchema.methods.toJSON = function () {
-    const _a = this.toObject(), { __v, password, _id } = _a, user = __rest(_a, ["__v", "password", "_id"]);
-    user.id = _id;
+    const _a = this.toObject(), { __v, password } = _a, user = __rest(_a, ["__v", "password"]);
     return user;
 };
 UserSchema.methods.comparePassword = function (password) {

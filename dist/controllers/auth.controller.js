@@ -14,16 +14,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginUser = void 0;
 const user_model_1 = __importDefault(require("../models/user.model"));
+const generate_jwt_helper_1 = require("../helpers/generate-jwt.helper");
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
-        const userInDB = yield user_model_1.default.findOne({ email });
+        const userInDB = yield user_model_1.default.findOne({ email })
+            .select('-createdAt -updatedAt -__v')
+            .populate('role', 'name');
         if (!userInDB)
             throw new Error('El usuario no se encuentra registrado');
         const isMatch = yield userInDB.comparePassword(password);
         if (!isMatch)
             throw new Error('El email o la contraseña son incorrectos');
-        return res.json(userInDB);
+        const accessToken = yield (0, generate_jwt_helper_1.generateJWT)(userInDB._id, 'access-token');
+        return res.json({
+            ok: true,
+            accessToken,
+            user: userInDB,
+        });
     }
     catch (error) {
         if (error instanceof Error) {
