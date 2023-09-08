@@ -1,6 +1,6 @@
 import { Schema, Model, models, model } from 'mongoose';
 
-import { Role } from '../interfaces/role.interface';
+import { IRole } from '../interfaces/role.interface';
 
 const RoleSchema = new Schema(
 	{
@@ -21,5 +21,5 @@ const RoleSchema = new Schema(
 	}
 );
 
-const Role: Model<Role> = models.Role || model('Role', RoleSchema);
+const Role: Model<IRole> = models.Role || model('Role', RoleSchema);
 export default Role;

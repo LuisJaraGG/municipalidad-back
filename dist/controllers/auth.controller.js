@@ -18,7 +18,7 @@ const generate_jwt_helper_1 = require("../helpers/generate-jwt.helper");
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
-        const userInDB = yield user_model_1.default.findOne({ email })
+        const userInDB = yield user_model_1.default.findOne({ email, state: true })
             .select('-createdAt -updatedAt -__v')
             .populate('role', 'name');
         if (!userInDB)

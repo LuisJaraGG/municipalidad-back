@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import User from '../models/user.model';
+import { IUser } from '../interfaces/user.interface';
 
 export const getUsers = async (req: Request, res: Response) => {
 	try {
@@ -51,22 +52,29 @@ export const createUser = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
 	const { id } = req.params;
-	const { password } = req.body;
+	const { password, state } = req.body as IUser;
 
 	try {
-		const user = await User.findById(id);
+		let user;
+		if ((password && password !== '') || state) {
+			user = await User.findById(id);
 
-		user!.name = req.body.name;
-		user!.email = req.body.email;
-		user!.imageURL = req.body.imageURL;
-		user!.role = req.body.role;
+			if (password && password !== '') {
+				user!.password = password;
+			}
 
-		if (password && password !== '') {
-			user!.password = req.body.password;
+			if (state) {
+				user!.state = true;
+			}
+			await user?.save();
+		} else {
+			user = await User.findById(id);
+			user?.name && (user.name = req.body.name);
+			user?.email && (user.email = req.body.email);
+			user?.role && (user.role = req.body.role);
+			user?.imageURL && (user.imageURL = req.body.imageURL);
+			await user?.save();
 		}
-
-		await user?.save();
-
 		return res.json({
 			ok: true,
 			user,

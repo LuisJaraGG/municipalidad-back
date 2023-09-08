@@ -7,7 +7,7 @@ export const loginUser = async (req: Request, res: Response) => {
 	const { email, password } = req.body;
 
 	try {
-		const userInDB = await User.findOne({ email })
+		const userInDB = await User.findOne({ email, state: true })
 			.select('-createdAt -updatedAt -__v')
 			.populate('role', 'name');
 

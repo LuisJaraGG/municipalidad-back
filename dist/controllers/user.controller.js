@@ -62,17 +62,27 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.createUser = createUser;
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const { password } = req.body;
+    const { password, state } = req.body;
     try {
-        const user = yield user_model_1.default.findById(id);
-        user.name = req.body.name;
-        user.email = req.body.email;
-        user.imageURL = req.body.imageURL;
-        user.role = req.body.role;
-        if (password && password !== '') {
-            user.password = req.body.password;
+        let user;
+        if ((password && password !== '') || state) {
+            user = yield user_model_1.default.findById(id);
+            if (password && password !== '') {
+                user.password = password;
+            }
+            if (state) {
+                user.state = true;
+            }
+            yield (user === null || user === void 0 ? void 0 : user.save());
         }
-        yield (user === null || user === void 0 ? void 0 : user.save());
+        else {
+            user = yield user_model_1.default.findById(id);
+            (user === null || user === void 0 ? void 0 : user.name) && (user.name = req.body.name);
+            (user === null || user === void 0 ? void 0 : user.email) && (user.email = req.body.email);
+            (user === null || user === void 0 ? void 0 : user.role) && (user.role = req.body.role);
+            (user === null || user === void 0 ? void 0 : user.imageURL) && (user.imageURL = req.body.imageURL);
+            yield (user === null || user === void 0 ? void 0 : user.save());
+        }
         return res.json({
             ok: true,
             user,

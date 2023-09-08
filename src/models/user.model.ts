@@ -1,7 +1,7 @@
 import { Schema, Model, models, model } from 'mongoose';
 import bcrypt from 'bcrypt';
 
-import { User } from '../interfaces/user.interface';
+import { IUser } from '../interfaces/user.interface';
 
 const UserSchema = new Schema(
 	{
@@ -65,5 +65,5 @@ UserSchema.methods.comparePassword = async function (password: string) {
 	return await bcrypt.compare(password, this.password);
 };
 
-const User: Model<User> = models.User || model('User', UserSchema);
+const User: Model<IUser> = models.User || model('User', UserSchema);
 export default User;
