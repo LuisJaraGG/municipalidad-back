@@ -5,6 +5,8 @@ import {
 	deleteUser,
 	getUser,
 	getUsers,
+	updateProfileUser,
+	updateStateUser,
 	updateUser,
 } from '../controllers/user.controller';
 import { verifyJWT } from '../middlewares/jwt-verify-token.middleware';
@@ -23,6 +25,8 @@ router.get('/', getUsers);
 router.get('/:id', getUserValidator, getUser);
 router.post('/', createUserValidator, createUser);
 router.put('/:id', updateUserValidator, updateUser);
+router.put('/state/:id', updateUserValidator, updateStateUser);
+router.put('/profile/:id', updateUserValidator, updateProfileUser);
 router.delete('/:id', deleteUserValidator, deleteUser);
 
 export default router;

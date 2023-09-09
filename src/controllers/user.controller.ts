@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 
 import User from '../models/user.model';
 import { IUser } from '../interfaces/user.interface';
+import Role from '../models/role.model';
 
 export const getUsers = async (req: Request, res: Response) => {
 	try {
@@ -50,31 +51,76 @@ export const createUser = async (req: Request, res: Response) => {
 	}
 };
 
-export const updateUser = async (req: Request, res: Response) => {
+export const updateStateUser = async (req: Request, res: Response) => {
+	const { state } = req.body as IUser;
 	const { id } = req.params;
-	const { password, state } = req.body as IUser;
 
 	try {
-		let user;
-		if ((password && password !== '') || state) {
-			user = await User.findById(id);
+		const user = await User.findByIdAndUpdate(id, { state: state }, { new: true })
+			.select('-password -createdAt -updatedAt -__v')
+			.lean();
 
+		return res.json({
+			ok: true,
+			user,
+		});
+	} catch (error) {
+		return res.json({ ok: false, message: 'Error interno del servidor' });
+	}
+};
+
+export const updateProfileUser = async (req: Request, res: Response) => {
+	const { id } = req.params;
+	const { password, ...updateBody } = req.body as IUser;
+	let user;
+
+	try {
+		user = await User.findById(id)
+			.select('-password -createdAt -updatedAt -__v')
+			.populate('role', 'name');
+
+		if (password && password !== '') {
 			if (password && password !== '') {
 				user!.password = password;
 			}
 
-			if (state) {
-				user!.state = true;
-			}
 			await user?.save();
 		} else {
-			user = await User.findById(id);
-			user?.name && (user.name = req.body.name);
-			user?.email && (user.email = req.body.email);
-			user?.role && (user.role = req.body.role);
-			user?.imageURL && (user.imageURL = req.body.imageURL);
-			await user?.save();
+			user = await User.findByIdAndUpdate(id, updateBody, { new: true })
+				.select('-password -createdAt -updatedAt -__v')
+				.populate('role', 'name')
+				.lean();
 		}
+
+		return res.json({
+			ok: true,
+			user,
+		});
+	} catch (error) {
+		return res.json({ ok: false, message: 'Error interno del servidor' });
+	}
+};
+
+export const updateUser = async (req: Request, res: Response) => {
+	const { id } = req.params;
+	const { password, ...updateBody } = req.body as IUser;
+	let user;
+
+	try {
+		user = await User.findById(id).select('-password -createdAt -updatedAt -__v');
+
+		if (password && password !== '') {
+			if (password && password !== '') {
+				user!.password = password;
+			}
+
+			await user?.save();
+		} else {
+			user = await User.findByIdAndUpdate(id, updateBody, { new: true })
+				.select('-password -createdAt -updatedAt -__v')
+				.lean();
+		}
+
 		return res.json({
 			ok: true,
 			user,
