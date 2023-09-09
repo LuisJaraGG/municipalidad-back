@@ -10,5 +10,7 @@ router.get('/', user_controller_1.getUsers);
 router.get('/:id', user_middleware_1.getUserValidator, user_controller_1.getUser);
 router.post('/', user_middleware_1.createUserValidator, user_controller_1.createUser);
 router.put('/:id', user_middleware_1.updateUserValidator, user_controller_1.updateUser);
+router.put('/state/:id', user_middleware_1.updateUserValidator, user_controller_1.updateStateUser);
+router.put('/profile/:id', user_middleware_1.updateUserValidator, user_controller_1.updateProfileUser);
 router.delete('/:id', user_middleware_1.deleteUserValidator, user_controller_1.deleteUser);
 exports.default = router;

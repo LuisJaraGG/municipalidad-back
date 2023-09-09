@@ -8,11 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.updateUser = exports.createUser = exports.getUser = exports.getUsers = void 0;
+exports.deleteUser = exports.updateUser = exports.updateProfileUser = exports.updateStateUser = exports.createUser = exports.getUser = exports.getUsers = void 0;
 const user_model_1 = __importDefault(require("../models/user.model"));
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -60,28 +71,69 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.createUser = createUser;
-const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateStateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { state } = req.body;
     const { id } = req.params;
-    const { password, state } = req.body;
     try {
-        let user;
-        if ((password && password !== '') || state) {
-            user = yield user_model_1.default.findById(id);
+        const user = yield user_model_1.default.findByIdAndUpdate(id, { state: state }, { new: true })
+            .select('-password -createdAt -updatedAt -__v')
+            .lean();
+        return res.json({
+            ok: true,
+            user,
+        });
+    }
+    catch (error) {
+        return res.json({ ok: false, message: 'Error interno del servidor' });
+    }
+});
+exports.updateStateUser = updateStateUser;
+const updateProfileUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const _a = req.body, { password } = _a, updateBody = __rest(_a, ["password"]);
+    let user;
+    try {
+        user = yield user_model_1.default.findById(id)
+            .select('-password -createdAt -updatedAt -__v')
+            .populate('role', 'name');
+        if (password && password !== '') {
             if (password && password !== '') {
                 user.password = password;
-            }
-            if (state) {
-                user.state = true;
             }
             yield (user === null || user === void 0 ? void 0 : user.save());
         }
         else {
-            user = yield user_model_1.default.findById(id);
-            (user === null || user === void 0 ? void 0 : user.name) && (user.name = req.body.name);
-            (user === null || user === void 0 ? void 0 : user.email) && (user.email = req.body.email);
-            (user === null || user === void 0 ? void 0 : user.role) && (user.role = req.body.role);
-            (user === null || user === void 0 ? void 0 : user.imageURL) && (user.imageURL = req.body.imageURL);
+            user = yield user_model_1.default.findByIdAndUpdate(id, updateBody, { new: true })
+                .select('-password -createdAt -updatedAt -__v')
+                .populate('role', 'name')
+                .lean();
+        }
+        return res.json({
+            ok: true,
+            user,
+        });
+    }
+    catch (error) {
+        return res.json({ ok: false, message: 'Error interno del servidor' });
+    }
+});
+exports.updateProfileUser = updateProfileUser;
+const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const _b = req.body, { password } = _b, updateBody = __rest(_b, ["password"]);
+    let user;
+    try {
+        user = yield user_model_1.default.findById(id).select('-password -createdAt -updatedAt -__v');
+        if (password && password !== '') {
+            if (password && password !== '') {
+                user.password = password;
+            }
             yield (user === null || user === void 0 ? void 0 : user.save());
+        }
+        else {
+            user = yield user_model_1.default.findByIdAndUpdate(id, updateBody, { new: true })
+                .select('-password -createdAt -updatedAt -__v')
+                .lean();
         }
         return res.json({
             ok: true,
