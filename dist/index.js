@@ -18,7 +18,8 @@ const app = (0, express_1.default)();
 //Base de datos
 (0, db_1.dbConnected)();
 //Middlewares
-app.use((0, cors_1.default)(process.env.NODE_ENV !== 'development' ? corsOptions : {}));
+// app.use(cors(process.env.NODE_ENV !== 'development' ? corsOptions : {}));
+app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 // app.use(

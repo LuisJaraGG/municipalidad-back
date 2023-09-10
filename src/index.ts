@@ -19,7 +19,8 @@ const app = express();
 dbConnected();
 
 //Middlewares
-app.use(cors(process.env.NODE_ENV !== 'development' ? corsOptions : {}));
+// app.use(cors(process.env.NODE_ENV !== 'development' ? corsOptions : {}));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use(
