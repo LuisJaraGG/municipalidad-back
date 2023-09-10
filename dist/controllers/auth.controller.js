@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginUser = void 0;
+exports.refreshTokenUser = exports.loginUser = void 0;
 const user_model_1 = __importDefault(require("../models/user.model"));
 const generate_jwt_helper_1 = require("../helpers/generate-jwt.helper");
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -27,16 +27,42 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!isMatch)
             throw new Error('El email o la contraseña son incorrectos');
         const accessToken = yield (0, generate_jwt_helper_1.generateJWT)(userInDB._id, 'access-token');
+        const refreshToken = yield (0, generate_jwt_helper_1.generateJWT)(userInDB._id, 'refresh-token');
         return res.json({
             ok: true,
             accessToken,
+            refreshToken,
             user: userInDB,
         });
     }
     catch (error) {
         if (error instanceof Error) {
-            return res.status(400).json({ error: error.message });
+            return res.status(500).json({ error: error.message });
         }
     }
 });
 exports.loginUser = loginUser;
+const refreshTokenUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.id;
+    try {
+        const user = yield user_model_1.default.findOne({ _id: id, state: true })
+            .select('-createdAt -updatedAt -__v')
+            .populate('role', 'name');
+        if (!user)
+            throw new Error('El usuario no se encuentra registrado');
+        const accessToken = yield (0, generate_jwt_helper_1.generateJWT)(user._id, 'access-token');
+        const refreshToken = yield (0, generate_jwt_helper_1.generateJWT)(user._id, 'refresh-token');
+        return res.json({
+            ok: true,
+            accessToken,
+            refreshToken,
+            user,
+        });
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ error: error.message });
+        }
+    }
+});
+exports.refreshTokenUser = refreshTokenUser;

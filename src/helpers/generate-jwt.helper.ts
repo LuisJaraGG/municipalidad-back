@@ -7,7 +7,7 @@ export const generateJWT = async (id: string, type: TokenType) => {
 		jwt.sign(
 			{ id },
 			process.env.JWT_SECRET!,
-			{ expiresIn: type === 'access-token' ? '1d' : '1h' },
+			{ expiresIn: type === 'access-token' ? '1h' : '1d' },
 			(err, token) => {
 				if (err) reject(err);
 				resolve(token);
