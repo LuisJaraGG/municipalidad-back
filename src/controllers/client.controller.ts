@@ -1,71 +1,70 @@
 import { Request, Response } from 'express';
-import { Role } from '../models';
 
-export const createRole = async (req: Request, res: Response) => {
-	const { name } = req.body;
+import { Client } from '../models';
 
+export const getClients = async (req: Request, res: Response) => {
 	try {
-		const role = await Role.create({ name });
-
-		res.status(201).json({
-			ok: true,
-			role,
-		});
-	} catch (error) {
-		return res.json({ ok: false, message: 'Error interno del servidor' });
-	}
-};
-
-export const getRoles = async (req: Request, res: Response) => {
-	try {
-		const roles = await Role.find().select('-createdAt -updatedAt -__v').lean();
+		const clients = await Client.find().select('-createdAt -updatedAt -__v').lean();
 
 		return res.json({
 			ok: true,
-			roles,
+			clients,
 		});
 	} catch (error) {
 		return res.json({ ok: false, message: 'Error interno del servidor' });
 	}
 };
 
-export const getRole = async (req: Request, res: Response) => {
+export const getClient = async (req: Request, res: Response) => {
 	const { id } = req.params;
 
 	try {
-		const role = await Role.findById(id).select('-createdAt -updatedAt -__v').lean();
+		const client = await Client.findById(id).select('-createdAt -updatedAt -__v').lean();
 
 		return res.json({
 			ok: true,
-			role,
+			client,
 		});
 	} catch (error) {
 		return res.json({ ok: false, message: 'Error interno del servidor' });
 	}
 };
 
-export const updateRole = async (req: Request, res: Response) => {
+export const createClient = async (req: Request, res: Response) => {
+	try {
+		const client = await Client.create(req.body);
+
+		return res.json({
+			ok: true,
+			client,
+		});
+	} catch (error) {
+		return res.json({ ok: false, message: 'Error interno del servidor' });
+	}
+};
+
+export const updateClient = async (req: Request, res: Response) => {
 	const { id } = req.params;
 
 	try {
-		const roleUpdated = await Role.findByIdAndUpdate(id, req.body, { new: true })
+		const client = await Client.findByIdAndUpdate(id, req.body, { new: true })
 			.select('-createdAt -updatedAt -__v')
 			.lean();
 
 		return res.json({
 			ok: true,
-			role: roleUpdated,
+			client,
 		});
 	} catch (error) {
 		return res.json({ ok: false, message: 'Error interno del servidor' });
 	}
 };
 
-export const deleteRole = async (req: Request, res: Response) => {
+export const deleteClient = async (req: Request, res: Response) => {
 	const { id } = req.params;
 
 	try {
-		await Role.findByIdAndDelete(id);
+		await Client.findByIdAndDelete(id);
 
 		return res.json({
 			ok: true,

@@ -1,5 +1,6 @@
 import { check } from 'express-validator';
-import Role from '../models/role.model';
+
+import { Role } from '../models';
 import { validateFields } from './field.middleware';
 
 export const isAdminValidator = async (_id: string) => {};
@@ -27,19 +28,6 @@ export const createRoleValidator = [
 ];
 
 export const getRoleValidator = [
-	check('id', 'El id es requerido').trim().not().isEmpty().isMongoId(),
-	check('id').custom(isNotExistRoleById),
-	validateFields,
-];
-
-export const updateRoleValidator = [
-	check('id', 'El id es requerido').trim().not().isEmpty().isMongoId(),
-	check('id').custom(isNotExistRoleById),
-	check('name', 'El nombre es requerido').trim().not().isEmpty().isLength({ min: 3 }),
-	validateFields,
-];
-
-export const deleteRoleValidator = [
 	check('id', 'El id es requerido').trim().not().isEmpty().isMongoId(),
 	check('id').custom(isNotExistRoleById),
 	validateFields,

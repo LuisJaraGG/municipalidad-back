@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
-import User from '../models/user.model';
-import { generateJWT } from '../helpers/generate-jwt.helper';
+import { User } from '../models';
+import { generateJWT } from '../helpers';
 
 export const loginUser = async (req: Request, res: Response) => {
 	const { email, password } = req.body;

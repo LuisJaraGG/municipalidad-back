@@ -16,7 +16,7 @@ exports.generateJWT = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const generateJWT = (id, type) => __awaiter(void 0, void 0, void 0, function* () {
     return new Promise((resolve, reject) => {
-        jsonwebtoken_1.default.sign({ id }, process.env.JWT_SECRET, { expiresIn: type === 'access-token' ? '1h' : '1d' }, (err, token) => {
+        jsonwebtoken_1.default.sign({ id }, process.env.JWT_SECRET, { expiresIn: type === 'access-token' ? '1h' : '2h' }, (err, token) => {
             if (err)
                 reject(err);
             resolve(token);

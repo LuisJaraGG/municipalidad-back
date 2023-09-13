@@ -7,6 +7,7 @@ import { dbConnected } from './database/db';
 import userRouter from './routes/user.route';
 import authRouter from './routes/auth.route';
 import roleRouter from './routes/role.route';
+import clientRouter from './routes/client.route';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/role', roleRouter);
+app.use('/api/client', clientRouter);
 
 //Servidor
 app.listen(process.env.PORT, () => {

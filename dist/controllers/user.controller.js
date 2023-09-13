@@ -19,15 +19,12 @@ var __rest = (this && this.__rest) || function (s, e) {
         }
     return t;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.updateProfileUser = exports.updateStateUser = exports.createUser = exports.getUser = exports.getUsers = void 0;
-const user_model_1 = __importDefault(require("../models/user.model"));
+const models_1 = require("../models");
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield user_model_1.default.find()
+        const users = yield models_1.User.find()
             .select('-password -createdAt -updatedAt -__v')
             .populate('role', 'name')
             .lean();
@@ -44,7 +41,7 @@ exports.getUsers = getUsers;
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        const user = yield user_model_1.default.findById(id)
+        const user = yield models_1.User.findById(id)
             .select('-password -createdAt -updatedAt -__v')
             .populate('role', 'name')
             .lean();
@@ -60,7 +57,7 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getUser = getUser;
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield user_model_1.default.create(req.body);
+        const user = yield models_1.User.create(req.body);
         return res.json({
             ok: true,
             user,
@@ -72,12 +69,11 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.createUser = createUser;
 const updateStateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { state } = req.body;
     const { id } = req.params;
     try {
-        const user = yield user_model_1.default.findByIdAndUpdate(id, { state: state }, { new: true })
-            .select('-password -createdAt -updatedAt -__v')
-            .lean();
+        const user = yield models_1.User.findById(id).select('-password -createdAt -updatedAt -__v');
+        user.state = !(user === null || user === void 0 ? void 0 : user.state);
+        yield (user === null || user === void 0 ? void 0 : user.save());
         return res.json({
             ok: true,
             user,
@@ -93,7 +89,7 @@ const updateProfileUser = (req, res) => __awaiter(void 0, void 0, void 0, functi
     const _a = req.body, { password } = _a, updateBody = __rest(_a, ["password"]);
     let user;
     try {
-        user = yield user_model_1.default.findById(id)
+        user = yield models_1.User.findById(id)
             .select('-password -createdAt -updatedAt -__v')
             .populate('role', 'name');
         if (password && password !== '') {
@@ -103,7 +99,7 @@ const updateProfileUser = (req, res) => __awaiter(void 0, void 0, void 0, functi
             yield (user === null || user === void 0 ? void 0 : user.save());
         }
         else {
-            user = yield user_model_1.default.findByIdAndUpdate(id, updateBody, { new: true })
+            user = yield models_1.User.findByIdAndUpdate(id, updateBody, { new: true })
                 .select('-password -createdAt -updatedAt -__v')
                 .populate('role', 'name')
                 .lean();
@@ -123,7 +119,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const _b = req.body, { password } = _b, updateBody = __rest(_b, ["password"]);
     let user;
     try {
-        user = yield user_model_1.default.findById(id).select('-password -createdAt -updatedAt -__v');
+        user = yield models_1.User.findById(id).select('-password -createdAt -updatedAt -__v');
         if (password && password !== '') {
             if (password && password !== '') {
                 user.password = password;
@@ -131,7 +127,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             yield (user === null || user === void 0 ? void 0 : user.save());
         }
         else {
-            user = yield user_model_1.default.findByIdAndUpdate(id, updateBody, { new: true })
+            user = yield models_1.User.findByIdAndUpdate(id, updateBody, { new: true })
                 .select('-password -createdAt -updatedAt -__v')
                 .lean();
         }
@@ -148,7 +144,7 @@ exports.updateUser = updateUser;
 const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        yield user_model_1.default.findByIdAndUpdate(id, { state: false });
+        yield models_1.User.findByIdAndDelete(id, { state: false });
         return res.json({
             ok: true,
         });

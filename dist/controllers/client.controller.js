@@ -9,69 +9,68 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteRole = exports.updateRole = exports.getRole = exports.getRoles = exports.createRole = void 0;
+exports.deleteClient = exports.updateClient = exports.createClient = exports.getClient = exports.getClients = void 0;
 const models_1 = require("../models");
-const createRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name } = req.body;
+const getClients = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const role = yield models_1.Role.create({ name });
-        res.status(201).json({
-            ok: true,
-            role,
-        });
-    }
-    catch (error) {
-        return res.json({ ok: false, message: 'Error interno del servidor' });
-    }
-});
-exports.createRole = createRole;
-const getRoles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const roles = yield models_1.Role.find().select('-createdAt -updatedAt -__v').lean();
+        const clients = yield models_1.Client.find().select('-createdAt -updatedAt -__v').lean();
         return res.json({
             ok: true,
-            roles,
+            clients,
         });
     }
     catch (error) {
         return res.json({ ok: false, message: 'Error interno del servidor' });
     }
 });
-exports.getRoles = getRoles;
-const getRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getClients = getClients;
+const getClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        const role = yield models_1.Role.findById(id).select('-createdAt -updatedAt -__v').lean();
+        const client = yield models_1.Client.findById(id).select('-createdAt -updatedAt -__v').lean();
         return res.json({
             ok: true,
-            role,
+            client,
         });
     }
     catch (error) {
         return res.json({ ok: false, message: 'Error interno del servidor' });
     }
 });
-exports.getRole = getRole;
-const updateRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getClient = getClient;
+const createClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const client = yield models_1.Client.create(req.body);
+        return res.json({
+            ok: true,
+            client,
+        });
+    }
+    catch (error) {
+        return res.json({ ok: false, message: 'Error interno del servidor' });
+    }
+});
+exports.createClient = createClient;
+const updateClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        const roleUpdated = yield models_1.Role.findByIdAndUpdate(id, req.body, { new: true })
+        const client = yield models_1.Client.findByIdAndUpdate(id, req.body, { new: true })
             .select('-createdAt -updatedAt -__v')
             .lean();
         return res.json({
             ok: true,
-            role: roleUpdated,
+            client,
         });
     }
     catch (error) {
         return res.json({ ok: false, message: 'Error interno del servidor' });
     }
 });
-exports.updateRole = updateRole;
-const deleteRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.updateClient = updateClient;
+const deleteClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        yield models_1.Role.findByIdAndDelete(id);
+        yield models_1.Client.findByIdAndDelete(id);
         return res.json({
             ok: true,
         });
@@ -80,4 +79,4 @@ const deleteRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         return res.json({ ok: false, message: 'Error interno del servidor' });
     }
 });
-exports.deleteRole = deleteRole;
+exports.deleteClient = deleteClient;

@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 
-import User from '../models/user.model';
-import { IUser } from '../interfaces/user.interface';
-import Role from '../models/role.model';
+import { IUser } from '../interfaces';
+import { User } from '../models';
 
 export const getUsers = async (req: Request, res: Response) => {
 	try {
@@ -52,13 +51,14 @@ export const createUser = async (req: Request, res: Response) => {
 };
 
 export const updateStateUser = async (req: Request, res: Response) => {
-	const { state } = req.body as IUser;
 	const { id } = req.params;
 
 	try {
-		const user = await User.findByIdAndUpdate(id, { state: state }, { new: true })
-			.select('-password -createdAt -updatedAt -__v')
-			.lean();
+		const user = await User.findById(id).select('-password -createdAt -updatedAt -__v');
+
+		user!.state = !user?.state;
+
+		await user?.save();
 
 		return res.json({
 			ok: true,
@@ -134,7 +134,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 	const { id } = req.params;
 
 	try {
-		await User.findByIdAndUpdate(id, { state: false });
+		await User.findByIdAndDelete(id, { state: false });
 
 		return res.json({
 			ok: true,

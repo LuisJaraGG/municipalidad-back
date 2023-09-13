@@ -1,7 +1,8 @@
 import { check } from 'express-validator';
-import User from '../models/user.model';
-import { validateFields } from './field.middleware';
+
+import { User } from '../models';
 import { isNotExistRoleById } from './role.middleware';
+import { validateFields } from './field.middleware';
 
 export const isExistUserByEmail = async (email: string) => {
 	const user = await User.findOne({ email }).select('+_id').lean();
@@ -30,18 +31,6 @@ export const createUserValidator = [
 ];
 
 export const getUserValidator = [
-	check('id', 'El id es requerido').trim().not().isEmpty().isMongoId(),
-	check('id').custom(IsNotExistUserById),
-	validateFields,
-];
-
-export const updateUserValidator = [
-	check('id', 'El id es requerido').trim().not().isEmpty().isMongoId(),
-	check('id').custom(IsNotExistUserById),
-	validateFields,
-];
-
-export const deleteUserValidator = [
 	check('id', 'El id es requerido').trim().not().isEmpty().isMongoId(),
 	check('id').custom(IsNotExistUserById),
 	validateFields,
