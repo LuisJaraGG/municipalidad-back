@@ -2,15 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const ClientSchema = new mongoose_1.Schema({
-    first_name: {
+    name: {
         type: String,
         required: [true, 'El nombre es obligatorio'],
         trim: true,
     },
-    last_name: {
+    email: {
         trim: true,
         type: String,
-        required: [true, 'El apellido es obligatorio'],
+        required: [true, 'El email es obligatorio'],
+        unique: true,
     },
     phone: {
         type: String,
@@ -18,22 +19,27 @@ const ClientSchema = new mongoose_1.Schema({
         trim: true,
     },
     direction: {
+        required: [true, 'La dirección es obligatoria'],
         type: String,
         trim: true,
     },
-    dni: {
+    dni_ruc: {
         type: String,
         required: [true, 'El DNI es obligatorio'],
         trim: true,
         unique: true,
     },
-    type: {
+    document_type: {
         type: String,
         enum: {
-            values: ['Jurídico', 'Natural'],
-            message: '{VALUE} no es un tipo válido',
+            values: ['DNI', 'RUC'],
+            message: '{VALUE} no es un tipo de documento válido',
         },
-        required: [true, 'El tipo es obligatorio'],
+        required: [true, 'El tipo de documento es obligatorio'],
+    },
+    state: {
+        type: Boolean,
+        default: true,
     },
 }, {
     timestamps: true,

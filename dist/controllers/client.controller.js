@@ -47,6 +47,7 @@ const createClient = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         });
     }
     catch (error) {
+        console.log(error);
         return res.json({ ok: false, message: 'Error interno del servidor' });
     }
 });

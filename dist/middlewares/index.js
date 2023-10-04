@@ -18,5 +18,6 @@ __exportStar(require("./auth.middleware"), exports);
 __exportStar(require("./client.middleware"), exports);
 __exportStar(require("./field.middleware"), exports);
 __exportStar(require("./jwt-verify-token.middleware"), exports);
+__exportStar(require("./provider.middleware"), exports);
 __exportStar(require("./role.middleware"), exports);
 __exportStar(require("./user.middleware"), exports);

@@ -8,6 +8,7 @@ import userRouter from './routes/user.route';
 import authRouter from './routes/auth.route';
 import roleRouter from './routes/role.route';
 import clientRouter from './routes/client.route';
+import providerRouter from './routes/provider.route';
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/role', roleRouter);
 app.use('/api/client', clientRouter);
+app.use('/api/provider', providerRouter);
 
 //Servidor
 app.listen(process.env.PORT, () => {

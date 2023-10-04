@@ -39,6 +39,8 @@ export const createClient = async (req: Request, res: Response) => {
 			client,
 		});
 	} catch (error) {
+		console.log(error);
+
 		return res.json({ ok: false, message: 'Error interno del servidor' });
 	}
 };

@@ -5,3 +5,4 @@ export { default as Role } from './role.model';
 export { default as ServiceReceipt } from './service-receipt.model';
 export { default as Service } from './service.model';
 export { default as User } from './user.model';
+export { default as Provider } from './provider.model';

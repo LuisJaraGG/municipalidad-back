@@ -9,35 +9,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getClientValidator = exports.createClientValidator = exports.isExistClientByDNI = void 0;
+exports.getProviderValidator = exports.createProviderValidator = exports.isExistproviderByDNIRUC = void 0;
 const express_validator_1 = require("express-validator");
 const models_1 = require("../models");
 const field_middleware_1 = require("./field.middleware");
-const isExistClientByDNI = (dni_ruc) => __awaiter(void 0, void 0, void 0, function* () {
-    const client = yield models_1.Client.findOne({ dni_ruc }).select('+_id').lean();
-    if (client) {
-        throw new Error(`El client con DNI/RUC ${dni_ruc} ya está registrado`);
+const isExistproviderByDNIRUC = (dni_ruc) => __awaiter(void 0, void 0, void 0, function* () {
+    const provider = yield models_1.Provider.findOne({ dni_ruc }).select('+_id').lean();
+    if (provider) {
+        throw new Error(`El provider con DNI/RUC ${dni_ruc} ya está registrado`);
     }
 });
-exports.isExistClientByDNI = isExistClientByDNI;
-const IsNotExistClientById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const client = yield models_1.Client.findById(id).select('+_id').lean();
-    if (!client) {
-        throw new Error(`No existe un client con el id ${id}`);
+exports.isExistproviderByDNIRUC = isExistproviderByDNIRUC;
+const IsNotExistProviderById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const provider = yield models_1.Provider.findById(id).select('+_id').lean();
+    if (!provider) {
+        throw new Error(`No existe un provider con el id ${id}`);
     }
 });
-exports.createClientValidator = [
+exports.createProviderValidator = [
     (0, express_validator_1.check)('name', 'El nombre es requerido').trim().not().isEmpty(),
-    (0, express_validator_1.check)('email', 'El correo es requerido').trim().not().isEmpty().isEmail(),
-    (0, express_validator_1.check)('phone', 'El teléfono es requerido').trim().not().isEmpty(),
     (0, express_validator_1.check)('direction', 'La dirección es requerida').trim().not().isEmpty(),
     (0, express_validator_1.check)('document_type').trim().not().isEmpty().isIn(['DNI', 'RUC']),
+    (0, express_validator_1.check)('state').trim().not().isEmpty().isIn(['ACTIVO', 'INACTIVO']),
+    (0, express_validator_1.check)('condition').trim().not().isEmpty().isIn(['HABIDO', 'NO HABIDO']),
     (0, express_validator_1.check)('dni_ruc').trim().not().isEmpty(),
-    (0, express_validator_1.check)('dni_ruc').custom(exports.isExistClientByDNI),
+    (0, express_validator_1.check)('dni_ruc').custom(exports.isExistproviderByDNIRUC),
     field_middleware_1.validateFields,
 ];
-exports.getClientValidator = [
+exports.getProviderValidator = [
     (0, express_validator_1.check)('id', 'El id es requerido').trim().not().isEmpty().isMongoId(),
-    (0, express_validator_1.check)('id').custom(IsNotExistClientById),
+    (0, express_validator_1.check)('id').custom(IsNotExistProviderById),
     field_middleware_1.validateFields,
 ];
