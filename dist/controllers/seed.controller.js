@@ -19,7 +19,7 @@ function seedData(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             if (process.env.NODE_ENV === 'production') {
-                return new Response('No tiene permisos', { status: 401 });
+                return res.status(401).json({ message: 'No tiene permisos' });
             }
             yield Promise.all([models_1.Role.deleteMany(), models_1.User.deleteMany()]);
             //Roles
@@ -51,6 +51,19 @@ function seedData(req, res) {
                     role: roles[2]._id,
                     address: 'Calle 123',
                 },
+            ]);
+            const serviceTypes = yield models_1.ServiceType.insertMany([
+                { name: 'Agua y Desague' },
+                { name: 'Baja Policia' },
+                { name: 'Registro Civil' },
+                { name: 'SISA' },
+                { name: 'Eventos Deportivos' },
+            ]);
+            yield models_1.Service.insertMany([
+                { name: 'Matrimonios', type: serviceTypes[2]._id },
+                { name: 'Nacimientos', type: serviceTypes[2]._id },
+                { name: 'Defunciones', type: serviceTypes[2]._id },
+                { name: 'Inscripciones', type: serviceTypes[2]._id },
             ]);
             return res.status(200).json({ message: 'Seed ejecutado correctamente' });
         }

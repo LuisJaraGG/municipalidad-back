@@ -20,5 +20,6 @@ __exportStar(require("./permission-request.interface"), exports);
 __exportStar(require("./provider.interface"), exports);
 __exportStar(require("./role.interface"), exports);
 __exportStar(require("./service-receipt.interface"), exports);
+__exportStar(require("./service-type.interface"), exports);
 __exportStar(require("./service.interface"), exports);
 __exportStar(require("./user.interface"), exports);

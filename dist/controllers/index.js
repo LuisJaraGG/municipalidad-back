@@ -19,4 +19,6 @@ __exportStar(require("./client.controller"), exports);
 __exportStar(require("./provider.controller"), exports);
 __exportStar(require("./role.controller"), exports);
 __exportStar(require("./seed.controller"), exports);
+__exportStar(require("./service-type.controller"), exports);
+__exportStar(require("./service.controller"), exports);
 __exportStar(require("./user.controller"), exports);

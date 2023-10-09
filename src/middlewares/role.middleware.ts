@@ -3,8 +3,6 @@ import { check } from 'express-validator';
 import { Role } from '../models';
 import { validateFields } from './field.middleware';
 
-export const isAdminValidator = async (_id: string) => {};
-
 export const isExistRoleByName = async (name: string) => {
 	const nameUppercase = name.toUpperCase();
 

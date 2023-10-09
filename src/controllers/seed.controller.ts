@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 
-import { Role, User } from '../models';
+import { Role, Service, ServiceType, User } from '../models';
 
 export async function seedData(req: Request, res: Response) {
 	try {
 		if (process.env.NODE_ENV === 'production') {
-			return new Response('No tiene permisos', { status: 401 });
+			return res.status(401).json({ message: 'No tiene permisos' });
 		}
 
 		await Promise.all([Role.deleteMany(), User.deleteMany()]);
@@ -41,6 +41,21 @@ export async function seedData(req: Request, res: Response) {
 				role: roles[2]._id,
 				address: 'Calle 123',
 			},
+		]);
+
+		const serviceTypes = await ServiceType.insertMany([
+			{ name: 'Agua y Desague' },
+			{ name: 'Baja Policia' },
+			{ name: 'Registro Civil' },
+			{ name: 'SISA' },
+			{ name: 'Eventos Deportivos' },
+		]);
+
+		await Service.insertMany([
+			{ name: 'Matrimonios', type: serviceTypes[2]._id },
+			{ name: 'Nacimientos', type: serviceTypes[2]._id },
+			{ name: 'Defunciones', type: serviceTypes[2]._id },
+			{ name: 'Inscripciones', type: serviceTypes[2]._id },
 		]);
 
 		return res.status(200).json({ message: 'Seed ejecutado correctamente' });

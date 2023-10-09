@@ -4,5 +4,6 @@ export * from './permission-request.interface';
 export * from './provider.interface';
 export * from './role.interface';
 export * from './service-receipt.interface';
+export * from './service-type.interface';
 export * from './service.interface';
 export * from './user.interface';

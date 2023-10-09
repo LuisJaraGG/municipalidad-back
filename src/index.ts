@@ -10,6 +10,8 @@ import roleRouter from './routes/role.route';
 import clientRouter from './routes/client.route';
 import providerRouter from './routes/provider.route';
 import seedRouter from './routes/seed.route';
+import serviceRouter from './routes/service.route';
+import serviceTypeRouter from './routes/service-type.route';
 
 dotenv.config();
 
@@ -41,6 +43,8 @@ app.use('/api/rol', roleRouter);
 app.use('/api/client', clientRouter);
 app.use('/api/provider', providerRouter);
 app.use('/api/seed', seedRouter);
+app.use('/api/service', serviceRouter);
+app.use('/api/service-type', serviceTypeRouter);
 
 //Servidor
 app.listen(process.env.PORT, () => {

@@ -8,19 +8,24 @@ const ServiceSchema = new Schema(
 			required: [true, 'El nombre es obligatorio'],
 			trim: true,
 			unique: true,
+			uppercase: true,
 		},
 		description: {
 			type: String,
-			required: [true, 'La descripción es obligatoria'],
 			trim: true,
 		},
 		price: {
 			type: Number,
 			required: [true, 'El precio es obligatorio'],
+			default: 0,
 		},
 		state: {
 			type: Boolean,
 			default: true,
+		},
+		type: {
+			type: Schema.Types.ObjectId,
+			ref: 'ServiceType',
 		},
 	},
 	{
@@ -28,5 +33,5 @@ const ServiceSchema = new Schema(
 	}
 );
 
-const Service: Model<IService> = models.User || model('Service', ServiceSchema);
+const Service: Model<IService> = models.Service || model('Service', ServiceSchema);
 export default Service;

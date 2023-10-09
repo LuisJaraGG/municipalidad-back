@@ -13,6 +13,8 @@ const role_route_1 = __importDefault(require("./routes/role.route"));
 const client_route_1 = __importDefault(require("./routes/client.route"));
 const provider_route_1 = __importDefault(require("./routes/provider.route"));
 const seed_route_1 = __importDefault(require("./routes/seed.route"));
+const service_route_1 = __importDefault(require("./routes/service.route"));
+const service_type_route_1 = __importDefault(require("./routes/service-type.route"));
 dotenv_1.default.config();
 const corsOptions = {
     origin: process.env.FRONTEND_URL,
@@ -39,6 +41,8 @@ app.use('/api/rol', role_route_1.default);
 app.use('/api/client', client_route_1.default);
 app.use('/api/provider', provider_route_1.default);
 app.use('/api/seed', seed_route_1.default);
+app.use('/api/service', service_route_1.default);
+app.use('/api/service-type', service_type_route_1.default);
 //Servidor
 app.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`);

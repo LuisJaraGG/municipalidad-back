@@ -9,32 +9,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRoleValidator = exports.createRoleValidator = exports.isNotExistRoleById = exports.isExistRoleByName = void 0;
+exports.getServiceValidator = exports.createServiceValidator = exports.isNotExistServiceById = exports.isExistService = void 0;
 const express_validator_1 = require("express-validator");
 const models_1 = require("../models");
 const field_middleware_1 = require("./field.middleware");
-const isExistRoleByName = (name) => __awaiter(void 0, void 0, void 0, function* () {
+const isExistService = (name) => __awaiter(void 0, void 0, void 0, function* () {
     const nameUppercase = name.toUpperCase();
-    const role = yield models_1.Role.findOne({ name: nameUppercase }).select('+_id').lean();
-    if (role) {
-        throw new Error(`Ya existe un rol con el nombre ${name}`);
+    const service = yield models_1.Service.findOne({ name: nameUppercase }).select('+_id').lean();
+    if (service) {
+        throw new Error(`Ya existe un servicio con el nombre ${name}`);
     }
 });
-exports.isExistRoleByName = isExistRoleByName;
-const isNotExistRoleById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const role = yield models_1.Role.findById(id).select('+_id').lean();
-    if (!role) {
-        throw new Error('No existe el rol');
+exports.isExistService = isExistService;
+const isNotExistServiceById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const service = yield models_1.Service.findById(id).select('+_id').lean();
+    if (!service) {
+        throw new Error('No existe el servicio');
     }
 });
-exports.isNotExistRoleById = isNotExistRoleById;
-exports.createRoleValidator = [
+exports.isNotExistServiceById = isNotExistServiceById;
+exports.createServiceValidator = [
     (0, express_validator_1.check)('name', 'El nombre es requerido').trim().not().isEmpty().isLength({ min: 3 }),
-    (0, express_validator_1.check)('name').custom(exports.isExistRoleByName),
+    (0, express_validator_1.check)('name').custom(exports.isExistService),
     field_middleware_1.validateFields,
 ];
-exports.getRoleValidator = [
+exports.getServiceValidator = [
     (0, express_validator_1.check)('id', 'El id es requerido').trim().not().isEmpty().isMongoId(),
-    (0, express_validator_1.check)('id').custom(exports.isNotExistRoleById),
+    (0, express_validator_1.check)('id').custom(exports.isNotExistServiceById),
     field_middleware_1.validateFields,
 ];

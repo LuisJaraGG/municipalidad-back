@@ -1,6 +1,5 @@
-export interface IService {
+export interface IServiceType {
 	name: string;
 	description: string;
-	price: number;
 	state: boolean;
 }
