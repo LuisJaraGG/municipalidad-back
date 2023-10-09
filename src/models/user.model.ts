@@ -1,7 +1,7 @@
 import { Schema, Model, models, model } from 'mongoose';
 import bcrypt from 'bcrypt';
 
-import { IUser } from '../interfaces/user.interface';
+import { IUser } from '../interfaces';
 
 const UserSchema = new Schema(
 	{
@@ -14,10 +14,12 @@ const UserSchema = new Schema(
 			required: [true, 'El email es obligatorio'],
 			trim: true,
 			unique: true,
+			match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Email inválido'],
 		},
 		password: {
 			type: String,
 			required: [true, 'La contraseña es obligatoria'],
+			select: false,
 		},
 		imageURL: {
 			type: String,
@@ -27,6 +29,10 @@ const UserSchema = new Schema(
 		state: {
 			type: Boolean,
 			default: true,
+		},
+		address: {
+			type: String,
+			required: [true, 'La dirección es obligatoria'],
 		},
 		role: {
 			type: Schema.Types.ObjectId,
@@ -56,14 +62,6 @@ UserSchema.pre('save', function (next) {
 	});
 });
 
-UserSchema.methods.toJSON = function () {
-	const { __v, password, ...user } = this.toObject();
-	return user;
-};
-
-UserSchema.methods.comparePassword = async function (password: string) {
-	return await bcrypt.compare(password, this.password);
-};
-
 const User: Model<IUser> = models.User || model('User', UserSchema);
+
 export default User;

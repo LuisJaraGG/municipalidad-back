@@ -6,7 +6,7 @@ export const isExistproviderByDNIRUC = async (dni_ruc: string) => {
 	const provider = await Provider.findOne({ dni_ruc }).select('+_id').lean();
 
 	if (provider) {
-		throw new Error(`El provider con DNI/RUC ${dni_ruc} ya está registrado`);
+		throw new Error('El proveedor ya existe');
 	}
 };
 
@@ -14,13 +14,13 @@ const IsNotExistProviderById = async (id: string) => {
 	const provider = await Provider.findById(id).select('+_id').lean();
 
 	if (!provider) {
-		throw new Error(`No existe un provider con el id ${id}`);
+		throw new Error('El proveedor no existe');
 	}
 };
 
 export const createProviderValidator = [
 	check('name', 'El nombre es requerido').trim().not().isEmpty(),
-	check('direction', 'La dirección es requerida').trim().not().isEmpty(),
+	check('address', 'La dirección es requerida').trim().not().isEmpty(),
 	check('document_type').trim().not().isEmpty().isIn(['DNI', 'RUC']),
 	check('state').trim().not().isEmpty().isIn(['ACTIVO', 'INACTIVO']),
 	check('condition').trim().not().isEmpty().isIn(['HABIDO', 'NO HABIDO']),

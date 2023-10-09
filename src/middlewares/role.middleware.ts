@@ -6,7 +6,9 @@ import { validateFields } from './field.middleware';
 export const isAdminValidator = async (_id: string) => {};
 
 export const isExistRoleByName = async (name: string) => {
-	const role = await Role.findOne({ name }).select('+_id').lean();
+	const nameUppercase = name.toUpperCase();
+
+	const role = await Role.findOne({ name: nameUppercase }).select('+_id').lean();
 
 	if (role) {
 		throw new Error(`Ya existe un rol con el nombre ${name}`);
@@ -17,7 +19,7 @@ export const isNotExistRoleById = async (id: string) => {
 	const role = await Role.findById(id).select('+_id').lean();
 
 	if (!role) {
-		throw new Error(`No existe un rol con el id ${id}`);
+		throw new Error('No existe el rol');
 	}
 };
 

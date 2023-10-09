@@ -8,76 +8,57 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProvider = exports.updateProvider = exports.createProvider = exports.getProvider = exports.getProviders = void 0;
 const models_1 = require("../models");
 const getProviders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const providers = yield models_1.Provider.find().select('-createdAt -updatedAt -__v').lean();
-        return res.json({
-            ok: true,
-            providers,
-        });
+        const providers = yield models_1.Provider.find().lean();
+        return res.json(providers);
     }
     catch (error) {
-        return res.json({ ok: false, message: 'Error interno del servidor' });
+        return res.json({ message: 'Error interno del servidor' });
     }
 });
 exports.getProviders = getProviders;
 const getProvider = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        const provider = yield models_1.Provider.findById(id).select('-createdAt -updatedAt -__v').lean();
-        return res.json({
-            ok: true,
-            provider,
-        });
+        const provider = yield models_1.Provider.findById(id).lean();
+        return res.json(provider);
     }
     catch (error) {
-        return res.json({ ok: false, message: 'Error interno del servidor' });
+        return res.json({ message: 'Error interno del servidor' });
     }
 });
 exports.getProvider = getProvider;
 const createProvider = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const _a = req.body, { state } = _a, resBody = __rest(_a, ["state"]);
+    const { name, dni_ruc, document_type, address, condition, state } = req.body;
     try {
-        const provider = yield models_1.Provider.create(Object.assign(Object.assign({}, resBody), { state: state === 'ACTIVO' ? true : false }));
-        return res.json({
-            ok: true,
-            provider,
+        const provider = new models_1.Provider({
+            name,
+            dni_ruc,
+            document_type,
+            address,
+            condition,
+            state,
         });
+        yield provider.save();
+        return res.json(provider);
     }
     catch (error) {
-        console.log(error);
-        return res.json({ ok: false, message: 'Error interno del servidor' });
+        return res.json({ message: 'Error interno del servidor' });
     }
 });
 exports.createProvider = createProvider;
 const updateProvider = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const _b = req.body, { state } = _b, resBody = __rest(_b, ["state"]);
     try {
-        const provider = yield models_1.Provider.findByIdAndUpdate(id, Object.assign(Object.assign({}, resBody), { state: state === 'ACTIVO' ? true : false }), { new: true })
-            .select('-createdAt -updatedAt -__v')
-            .lean();
-        return res.json({
-            ok: true,
-            provider,
-        });
+        const provider = yield models_1.Provider.findByIdAndUpdate(id, req.body, { new: true }).lean();
+        return res.json(provider);
     }
     catch (error) {
-        return res.json({ ok: false, message: 'Error interno del servidor' });
+        return res.json({ message: 'Error interno del servidor' });
     }
 });
 exports.updateProvider = updateProvider;
@@ -90,7 +71,7 @@ const deleteProvider = (req, res) => __awaiter(void 0, void 0, void 0, function*
         });
     }
     catch (error) {
-        return res.json({ ok: false, message: 'Error interno del servidor' });
+        return res.json({ message: 'Error interno del servidor' });
     }
 });
 exports.deleteProvider = deleteProvider;

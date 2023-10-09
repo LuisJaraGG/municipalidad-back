@@ -18,7 +18,7 @@ const ClientSchema = new mongoose_1.Schema({
         required: [true, 'El teléfono es obligatorio'],
         trim: true,
     },
-    direction: {
+    address: {
         required: [true, 'La dirección es obligatoria'],
         type: String,
         trim: true,
@@ -44,5 +44,5 @@ const ClientSchema = new mongoose_1.Schema({
 }, {
     timestamps: true,
 });
-const Client = mongoose_1.models.User || (0, mongoose_1.model)('Client', ClientSchema);
+const Client = mongoose_1.models.Client || (0, mongoose_1.model)('Client', ClientSchema);
 exports.default = Client;

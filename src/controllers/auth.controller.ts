@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import bcrypt from 'bcrypt';
 
 import { User } from '../models';
 import { generateJWT } from '../helpers';
@@ -8,28 +9,25 @@ export const loginUser = async (req: Request, res: Response) => {
 
 	try {
 		const userInDB = await User.findOne({ email, state: true })
-			.select('-createdAt -updatedAt -__v')
-			.populate('role', 'name');
+			.select('+password')
+			.populate('role', 'name')
+			.lean();
 
-		if (!userInDB) throw new Error('El usuario no se encuentra registrado');
-
-		const isMatch = await userInDB.comparePassword(password);
-
-		if (!isMatch) throw new Error('El email o la contraseña son incorrectos');
-
-		const accessToken = await generateJWT(userInDB._id, 'access-token');
-		const refreshToken = await generateJWT(userInDB._id, 'refresh-token');
-
-		return res.json({
-			ok: true,
-			accessToken,
-			refreshToken,
-			user: userInDB,
-		});
-	} catch (error) {
-		if (error instanceof Error) {
-			return res.status(500).json({ error: error.message });
+		if (!userInDB) {
+			return res.status(404).json({ message: 'Credenciales incorrectas' });
 		}
+
+		const isMatch = bcrypt.compareSync(password, userInDB.password!);
+
+		if (!isMatch) {
+			return res.status(401).json({ message: 'Credenciales incorrectas' });
+		}
+
+		const { password: _, ...user } = userInDB;
+
+		return res.json({ user });
+	} catch (error) {
+		return res.status(500).json({ message: 'Error interno del servidor' });
 	}
 };
 

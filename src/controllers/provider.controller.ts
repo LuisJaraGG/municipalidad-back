@@ -4,14 +4,10 @@ import { Provider } from '../models';
 
 export const getProviders = async (req: Request, res: Response) => {
 	try {
-		const providers = await Provider.find().select('-createdAt -updatedAt -__v').lean();
-
-		return res.json({
-			ok: true,
-			providers,
-		});
+		const providers = await Provider.find().lean();
+		return res.json(providers);
 	} catch (error) {
-		return res.json({ ok: false, message: 'Error interno del servidor' });
+		return res.json({ message: 'Error interno del servidor' });
 	}
 };
 
@@ -19,62 +15,47 @@ export const getProvider = async (req: Request, res: Response) => {
 	const { id } = req.params;
 
 	try {
-		const provider = await Provider.findById(id).select('-createdAt -updatedAt -__v').lean();
-
-		return res.json({
-			ok: true,
-			provider,
-		});
+		const provider = await Provider.findById(id).lean();
+		return res.json(provider);
 	} catch (error) {
-		return res.json({ ok: false, message: 'Error interno del servidor' });
+		return res.json({ message: 'Error interno del servidor' });
 	}
 };
 
 export const createProvider = async (req: Request, res: Response) => {
-	const { state, ...resBody } = req.body;
+	const { name, dni_ruc, document_type, address, condition, state } = req.body;
 
 	try {
-		const provider = await Provider.create({
-			...resBody,
-			state: state === 'ACTIVO' ? true : false,
+		const provider = new Provider({
+			name,
+			dni_ruc,
+			document_type,
+			address,
+			condition,
+			state,
 		});
 
-		return res.json({
-			ok: true,
-			provider,
-		});
+		await provider.save();
+
+		return res.json(provider);
 	} catch (error) {
-		console.log(error);
-		return res.json({ ok: false, message: 'Error interno del servidor' });
+		return res.json({ message: 'Error interno del servidor' });
 	}
 };
 
 export const updateProvider = async (req: Request, res: Response) => {
 	const { id } = req.params;
 
-	const { state, ...resBody } = req.body;
-
 	try {
-		const provider = await Provider.findByIdAndUpdate(
-			id,
-			{ ...resBody, state: state === 'ACTIVO' ? true : false },
-			{ new: true }
-		)
-			.select('-createdAt -updatedAt -__v')
-			.lean();
-
-		return res.json({
-			ok: true,
-			provider,
-		});
+		const provider = await Provider.findByIdAndUpdate(id, req.body, { new: true }).lean();
+		return res.json(provider);
 	} catch (error) {
-		return res.json({ ok: false, message: 'Error interno del servidor' });
+		return res.json({ message: 'Error interno del servidor' });
 	}
 };
 
 export const deleteProvider = async (req: Request, res: Response) => {
 	const { id } = req.params;
-
 	try {
 		await Provider.findByIdAndDelete(id);
 
@@ -82,6 +63,6 @@ export const deleteProvider = async (req: Request, res: Response) => {
 			ok: true,
 		});
 	} catch (error) {
-		return res.json({ ok: false, message: 'Error interno del servidor' });
+		return res.json({ message: 'Error interno del servidor' });
 	}
 };

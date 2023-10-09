@@ -16,19 +16,19 @@ const field_middleware_1 = require("./field.middleware");
 const isExistproviderByDNIRUC = (dni_ruc) => __awaiter(void 0, void 0, void 0, function* () {
     const provider = yield models_1.Provider.findOne({ dni_ruc }).select('+_id').lean();
     if (provider) {
-        throw new Error(`El provider con DNI/RUC ${dni_ruc} ya está registrado`);
+        throw new Error('El proveedor ya existe');
     }
 });
 exports.isExistproviderByDNIRUC = isExistproviderByDNIRUC;
 const IsNotExistProviderById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const provider = yield models_1.Provider.findById(id).select('+_id').lean();
     if (!provider) {
-        throw new Error(`No existe un provider con el id ${id}`);
+        throw new Error('El proveedor no existe');
     }
 });
 exports.createProviderValidator = [
     (0, express_validator_1.check)('name', 'El nombre es requerido').trim().not().isEmpty(),
-    (0, express_validator_1.check)('direction', 'La dirección es requerida').trim().not().isEmpty(),
+    (0, express_validator_1.check)('address', 'La dirección es requerida').trim().not().isEmpty(),
     (0, express_validator_1.check)('document_type').trim().not().isEmpty().isIn(['DNI', 'RUC']),
     (0, express_validator_1.check)('state').trim().not().isEmpty().isIn(['ACTIVO', 'INACTIVO']),
     (0, express_validator_1.check)('condition').trim().not().isEmpty().isIn(['HABIDO', 'NO HABIDO']),

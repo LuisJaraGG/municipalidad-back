@@ -17,23 +17,24 @@ const field_middleware_1 = require("./field.middleware");
 const isExistUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield models_1.User.findOne({ email }).select('+_id').lean();
     if (user) {
-        throw new Error(`El correo ${email} ya está registrado`);
+        throw new Error(`El usuario ya está registrado`);
     }
 });
 exports.isExistUserByEmail = isExistUserByEmail;
 const IsNotExistUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield models_1.User.findById(id).select('+_id').lean();
     if (!user) {
-        throw new Error(`No existe un usuario con el id ${id}`);
+        throw new Error('El usuario no existe');
     }
 });
 exports.createUserValidator = [
     (0, express_validator_1.check)('name', 'El nombre es requerido').trim().not().isEmpty().isLength({ min: 3 }),
     (0, express_validator_1.check)('email', 'El correo es requerido').trim().isEmail(),
     (0, express_validator_1.check)('password', 'La contraseña es requerida').trim().not().isEmpty().isLength({ min: 6 }),
+    (0, express_validator_1.check)('adress').trim().not().isEmpty(),
+    (0, express_validator_1.check)('email').custom(exports.isExistUserByEmail),
     (0, express_validator_1.check)('role', 'El rol es requerido').trim().not().isEmpty().isMongoId(),
     (0, express_validator_1.check)('role').custom(role_middleware_1.isNotExistRoleById),
-    (0, express_validator_1.check)('email').custom(exports.isExistUserByEmail),
     field_middleware_1.validateFields,
 ];
 exports.getUserValidator = [

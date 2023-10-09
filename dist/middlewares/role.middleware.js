@@ -16,7 +16,8 @@ const field_middleware_1 = require("./field.middleware");
 const isAdminValidator = (_id) => __awaiter(void 0, void 0, void 0, function* () { });
 exports.isAdminValidator = isAdminValidator;
 const isExistRoleByName = (name) => __awaiter(void 0, void 0, void 0, function* () {
-    const role = yield models_1.Role.findOne({ name }).select('+_id').lean();
+    const nameUppercase = name.toUpperCase();
+    const role = yield models_1.Role.findOne({ name: nameUppercase }).select('+_id').lean();
     if (role) {
         throw new Error(`Ya existe un rol con el nombre ${name}`);
     }
@@ -25,7 +26,7 @@ exports.isExistRoleByName = isExistRoleByName;
 const isNotExistRoleById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const role = yield models_1.Role.findById(id).select('+_id').lean();
     if (!role) {
-        throw new Error(`No existe un rol con el id ${id}`);
+        throw new Error('No existe el rol');
     }
 });
 exports.isNotExistRoleById = isNotExistRoleById;

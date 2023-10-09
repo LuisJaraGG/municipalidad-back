@@ -18,4 +18,5 @@ __exportStar(require("./auth.controller"), exports);
 __exportStar(require("./client.controller"), exports);
 __exportStar(require("./provider.controller"), exports);
 __exportStar(require("./role.controller"), exports);
+__exportStar(require("./seed.controller"), exports);
 __exportStar(require("./user.controller"), exports);

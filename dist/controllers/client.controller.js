@@ -13,58 +13,52 @@ exports.deleteClient = exports.updateClient = exports.createClient = exports.get
 const models_1 = require("../models");
 const getClients = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const clients = yield models_1.Client.find().select('-createdAt -updatedAt -__v').lean();
-        return res.json({
-            ok: true,
-            clients,
-        });
+        const clients = yield models_1.Client.find().lean();
+        return res.json(clients);
     }
     catch (error) {
-        return res.json({ ok: false, message: 'Error interno del servidor' });
+        return res.json({ message: 'Error interno del servidor' });
     }
 });
 exports.getClients = getClients;
 const getClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        const client = yield models_1.Client.findById(id).select('-createdAt -updatedAt -__v').lean();
-        return res.json({
-            ok: true,
-            client,
-        });
+        const client = yield models_1.Client.findById(id).lean();
+        return res.json(client);
     }
     catch (error) {
-        return res.json({ ok: false, message: 'Error interno del servidor' });
+        return res.json({ message: 'Error interno del servidor' });
     }
 });
 exports.getClient = getClient;
 const createClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, email, phone, address, dni_ruc, document_type } = req.body;
     try {
-        const client = yield models_1.Client.create(req.body);
-        return res.json({
-            ok: true,
-            client,
+        const client = new models_1.Client({
+            name,
+            email,
+            phone,
+            address,
+            dni_ruc,
+            document_type,
         });
+        yield client.save();
+        return res.json(client);
     }
     catch (error) {
-        console.log(error);
-        return res.json({ ok: false, message: 'Error interno del servidor' });
+        return res.json({ message: 'Error interno del servidor' });
     }
 });
 exports.createClient = createClient;
 const updateClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        const client = yield models_1.Client.findByIdAndUpdate(id, req.body, { new: true })
-            .select('-createdAt -updatedAt -__v')
-            .lean();
-        return res.json({
-            ok: true,
-            client,
-        });
+        const client = yield models_1.Client.findByIdAndUpdate(id, req.body, { new: true }).lean();
+        return res.json(client);
     }
     catch (error) {
-        return res.json({ ok: false, message: 'Error interno del servidor' });
+        return res.json({ message: 'Error interno del servidor' });
     }
 });
 exports.updateClient = updateClient;
@@ -77,7 +71,7 @@ const deleteClient = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         });
     }
     catch (error) {
-        return res.json({ ok: false, message: 'Error interno del servidor' });
+        return res.json({ message: 'Error interno del servidor' });
     }
 });
 exports.deleteClient = deleteClient;

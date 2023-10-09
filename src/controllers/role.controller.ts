@@ -5,27 +5,21 @@ export const createRole = async (req: Request, res: Response) => {
 	const { name } = req.body;
 
 	try {
-		const role = await Role.create({ name });
+		const role = new Role({ name });
+		await role.save();
 
-		res.status(201).json({
-			ok: true,
-			role,
-		});
+		res.json(role);
 	} catch (error) {
-		return res.json({ ok: false, message: 'Error interno del servidor' });
+		return res.json({ message: 'Error interno del servidor' });
 	}
 };
 
 export const getRoles = async (req: Request, res: Response) => {
 	try {
-		const roles = await Role.find().select('-createdAt -updatedAt -__v').lean();
-
-		return res.json({
-			ok: true,
-			roles,
-		});
+		const roles = await Role.find().lean();
+		return res.json(roles);
 	} catch (error) {
-		return res.json({ ok: false, message: 'Error interno del servidor' });
+		return res.json({ message: 'Error interno del servidor' });
 	}
 };
 
@@ -33,14 +27,10 @@ export const getRole = async (req: Request, res: Response) => {
 	const { id } = req.params;
 
 	try {
-		const role = await Role.findById(id).select('-createdAt -updatedAt -__v').lean();
-
-		return res.json({
-			ok: true,
-			role,
-		});
+		const role = await Role.findById(id).lean();
+		return res.json(role);
 	} catch (error) {
-		return res.json({ ok: false, message: 'Error interno del servidor' });
+		return res.json({ message: 'Error interno del servidor' });
 	}
 };
 
@@ -48,16 +38,10 @@ export const updateRole = async (req: Request, res: Response) => {
 	const { id } = req.params;
 
 	try {
-		const roleUpdated = await Role.findByIdAndUpdate(id, req.body, { new: true })
-			.select('-createdAt -updatedAt -__v')
-			.lean();
-
-		return res.json({
-			ok: true,
-			role: roleUpdated,
-		});
+		const role = await Role.findByIdAndUpdate(id, req.body, { new: true }).lean();
+		return res.json(role);
 	} catch (error) {
-		return res.json({ ok: false, message: 'Error interno del servidor' });
+		return res.json({ message: 'Error interno del servidor' });
 	}
 };
 
@@ -71,6 +55,6 @@ export const deleteRole = async (req: Request, res: Response) => {
 			ok: true,
 		});
 	} catch (error) {
-		return res.json({ ok: false, message: 'Error interno del servidor' });
+		return res.json({ message: 'Error interno del servidor' });
 	}
 };

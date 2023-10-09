@@ -1,21 +1,14 @@
 import { Request, Response } from 'express';
 
-import { IUser } from '../interfaces';
 import { User } from '../models';
+import bcrypt from 'bcrypt';
 
 export const getUsers = async (req: Request, res: Response) => {
 	try {
-		const users = await User.find()
-			.select('-password -createdAt -updatedAt -__v')
-			.populate('role', 'name')
-			.lean();
-
-		return res.json({
-			ok: true,
-			users,
-		});
+		const users = await User.find().populate('role', 'name').lean();
+		return res.json(users);
 	} catch (error) {
-		return res.json({ ok: false, message: 'Error interno del servidor' });
+		return res.json({ message: 'Error interno del servidor' });
 	}
 };
 
@@ -23,110 +16,55 @@ export const getUser = async (req: Request, res: Response) => {
 	const { id } = req.params;
 
 	try {
-		const user = await User.findById(id)
-			.select('-password -createdAt -updatedAt -__v')
-			.populate('role', 'name')
-			.lean();
-
-		return res.json({
-			ok: true,
-			user,
-		});
+		const user = await User.findById(id).populate('role', 'name').lean();
+		return res.json(user);
 	} catch (error) {
-		return res.json({ ok: false, message: 'Error interno del servidor' });
+		return res.json({ message: 'Error interno del servidor' });
 	}
 };
 
 export const createUser = async (req: Request, res: Response) => {
+	const { name, email, password, role, imageUrl, address } = req.body;
 	try {
-		const user = await User.create(req.body);
-
-		return res.json({
-			ok: true,
-			user,
+		const user = new User({
+			name,
+			email,
+			password,
+			role,
+			imageUrl,
+			address,
 		});
+
+		await user.save();
+
+		return res.json(user);
 	} catch (error) {
-		return res.json({ ok: false, message: 'Error interno del servidor' });
-	}
-};
-
-export const updateStateUser = async (req: Request, res: Response) => {
-	const { id } = req.params;
-
-	try {
-		const user = await User.findById(id).select('-password -createdAt -updatedAt -__v');
-
-		user!.state = !user?.state;
-
-		await user?.save();
-
-		return res.json({
-			ok: true,
-			user,
-		});
-	} catch (error) {
-		return res.json({ ok: false, message: 'Error interno del servidor' });
-	}
-};
-
-export const updateProfileUser = async (req: Request, res: Response) => {
-	const { id } = req.params;
-	const { password, ...updateBody } = req.body as IUser;
-	let user;
-
-	try {
-		user = await User.findById(id)
-			.select('-password -createdAt -updatedAt -__v')
-			.populate('role', 'name');
-
-		if (password && password !== '') {
-			if (password && password !== '') {
-				user!.password = password;
-			}
-
-			await user?.save();
-		} else {
-			user = await User.findByIdAndUpdate(id, updateBody, { new: true })
-				.select('-password -createdAt -updatedAt -__v')
-				.populate('role', 'name')
-				.lean();
-		}
-
-		return res.json({
-			ok: true,
-			user,
-		});
-	} catch (error) {
-		return res.json({ ok: false, message: 'Error interno del servidor' });
+		return res.json({ message: 'Error interno del servidor' });
 	}
 };
 
 export const updateUser = async (req: Request, res: Response) => {
 	const { id } = req.params;
-	const { password, ...updateBody } = req.body as IUser;
-	let user;
+
+	const { password } = req.body;
 
 	try {
-		user = await User.findById(id).select('-password -createdAt -updatedAt -__v');
+		const userInDB = await User.findById(id).select('+password').lean();
 
-		if (password && password !== '') {
-			if (password && password !== '') {
-				user!.password = password;
-			}
-
-			await user?.save();
+		if (password) {
+			const salt = await bcrypt.genSalt(10);
+			req.body.password = await bcrypt.hash(password, salt);
 		} else {
-			user = await User.findByIdAndUpdate(id, updateBody, { new: true })
-				.select('-password -createdAt -updatedAt -__v')
-				.lean();
+			req.body.password = userInDB!.password;
 		}
 
-		return res.json({
-			ok: true,
-			user,
-		});
+		const user = await User.findByIdAndUpdate(id, req.body, { new: true })
+			.populate('role', 'name')
+			.lean();
+
+		return res.json(user);
 	} catch (error) {
-		return res.json({ ok: false, message: 'Error interno del servidor' });
+		return res.json({ message: 'Error interno del servidor' });
 	}
 };
 
@@ -134,12 +72,11 @@ export const deleteUser = async (req: Request, res: Response) => {
 	const { id } = req.params;
 
 	try {
-		await User.findByIdAndDelete(id, { state: false });
-
+		await User.findByIdAndDelete(id).lean();
 		return res.json({
 			ok: true,
 		});
 	} catch (error) {
-		return res.json({ ok: false, message: 'Error interno del servidor' });
+		return res.json({ message: 'Error interno del servidor' });
 	}
 };

@@ -14,7 +14,7 @@ const ProviderSchema = new mongoose_1.Schema({
         unique: true,
         trim: true,
     },
-    direction: {
+    address: {
         type: String,
         required: [true, 'El monto es obligatorio'],
     },
@@ -33,5 +33,5 @@ const ProviderSchema = new mongoose_1.Schema({
 }, {
     timestamps: true,
 });
-const Provider = mongoose_1.models.IProvider || (0, mongoose_1.model)('Provider', ProviderSchema);
+const Provider = mongoose_1.models.Provider || (0, mongoose_1.model)('Provider', ProviderSchema);
 exports.default = Provider;

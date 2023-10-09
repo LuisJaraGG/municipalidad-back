@@ -2,7 +2,7 @@ export interface IProvider {
 	_id: string;
 	name: string;
 	dni_ruc: string;
-	direction: string;
+	address: string;
 	condition: string;
 	state: boolean;
 

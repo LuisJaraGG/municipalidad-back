@@ -8,34 +8,44 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.refreshTokenUser = exports.loginUser = void 0;
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const models_1 = require("../models");
 const helpers_1 = require("../helpers");
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
         const userInDB = yield models_1.User.findOne({ email, state: true })
-            .select('-createdAt -updatedAt -__v')
-            .populate('role', 'name');
-        if (!userInDB)
-            throw new Error('El usuario no se encuentra registrado');
-        const isMatch = yield userInDB.comparePassword(password);
-        if (!isMatch)
-            throw new Error('El email o la contraseña son incorrectos');
-        const accessToken = yield (0, helpers_1.generateJWT)(userInDB._id, 'access-token');
-        const refreshToken = yield (0, helpers_1.generateJWT)(userInDB._id, 'refresh-token');
-        return res.json({
-            ok: true,
-            accessToken,
-            refreshToken,
-            user: userInDB,
-        });
+            .select('+password')
+            .populate('role', 'name')
+            .lean();
+        if (!userInDB) {
+            return res.status(404).json({ message: 'Credenciales incorrectas' });
+        }
+        const isMatch = bcrypt_1.default.compareSync(password, userInDB.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Credenciales incorrectas' });
+        }
+        const { password: _ } = userInDB, user = __rest(userInDB, ["password"]);
+        return res.json({ user });
     }
     catch (error) {
-        if (error instanceof Error) {
-            return res.status(500).json({ error: error.message });
-        }
+        return res.status(500).json({ message: 'Error interno del servidor' });
     }
 });
 exports.loginUser = loginUser;

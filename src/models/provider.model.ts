@@ -15,7 +15,7 @@ const ProviderSchema = new Schema(
 			unique: true,
 			trim: true,
 		},
-		direction: {
+		address: {
 			type: String,
 			required: [true, 'El monto es obligatorio'],
 		},
@@ -37,6 +37,6 @@ const ProviderSchema = new Schema(
 	}
 );
 
-const Provider: Model<IProvider> = models.IProvider || model('Provider', ProviderSchema);
+const Provider: Model<IProvider> = models.Provider || model('Provider', ProviderSchema);
 
 export default Provider;

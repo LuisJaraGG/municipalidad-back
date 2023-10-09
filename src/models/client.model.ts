@@ -19,7 +19,7 @@ const ClientSchema = new Schema(
 			required: [true, 'El teléfono es obligatorio'],
 			trim: true,
 		},
-		direction: {
+		address: {
 			required: [true, 'La dirección es obligatoria'],
 			type: String,
 			trim: true,
@@ -48,5 +48,6 @@ const ClientSchema = new Schema(
 	}
 );
 
-const Client: Model<IClient> = models.User || model('Client', ClientSchema);
+const Client: Model<IClient> = models.Client || model('Client', ClientSchema);
+
 export default Client;

@@ -9,6 +9,7 @@ import authRouter from './routes/auth.route';
 import roleRouter from './routes/role.route';
 import clientRouter from './routes/client.route';
 import providerRouter from './routes/provider.route';
+import seedRouter from './routes/seed.route';
 
 dotenv.config();
 
@@ -36,9 +37,10 @@ app.use(express.urlencoded({ extended: true }));
 //Rutas
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
-app.use('/api/role', roleRouter);
+app.use('/api/rol', roleRouter);
 app.use('/api/client', clientRouter);
 app.use('/api/provider', providerRouter);
+app.use('/api/seed', seedRouter);
 
 //Servidor
 app.listen(process.env.PORT, () => {
