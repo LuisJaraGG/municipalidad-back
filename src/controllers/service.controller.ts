@@ -3,7 +3,7 @@ import { Service } from '../models';
 
 export const getServices = async (req: Request, res: Response) => {
 	try {
-		const services = await Service.find().populate('type', 'name').lean();
+		const services = await Service.find().populate('type', 'name description').lean();
 		return res.json(services);
 	} catch (error) {
 		return res.json({ message: 'Error interno del servidor' });

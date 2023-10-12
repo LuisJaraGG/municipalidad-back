@@ -17,6 +17,10 @@ const ServiceReceiptSchema = new Schema(
 			type: Number,
 			required: [true, 'El monto es obligatorio'],
 		},
+		date:{
+			type:String,
+			required:[true, 'La fecha de pago es  obligatoria']
+		}
 	},
 	{
 		timestamps: true,
@@ -24,6 +28,6 @@ const ServiceReceiptSchema = new Schema(
 );
 
 const ServiceReceipt: Model<IServiceReceipt> =
-	models.User || model('ServiceReceipt', ServiceReceiptSchema);
+	models.ServiceReceipt || model('ServiceReceipt', ServiceReceiptSchema);
 
 export default ServiceReceipt;

@@ -1,5 +1,5 @@
 import { Schema, Model, models, model } from 'mongoose';
-import { IServiceType } from '../interfaces';
+import { IServiceType,PaymentType} from '../interfaces';
 
 const ServiceTypeSchema = new Schema(
 	{
@@ -8,21 +8,22 @@ const ServiceTypeSchema = new Schema(
 			required: [true, 'El nombre es obligatorio'],
 			trim: true,
 			unique: true,
+			uppercase: true,
 		},
 		description: {
 			type: String,
-			trim: true,
+			enum: PaymentType,
+			required: [true, 'La descripcion debe ser obligatoria'],
 		},
 		state: {
 			type: Boolean,
 			default: true,
-		},
+		}
 	},
 	{
 		timestamps: true,
 	}
 );
 
-const ServiceType: Model<IServiceType> =
-	models.ServiceType || model('ServiceType', ServiceTypeSchema);
+const ServiceType: Model<IServiceType> = models.ServiceType || model('ServiceType',ServiceTypeSchema );
 export default ServiceType;
