@@ -8,6 +8,7 @@ export interface IClient {
 	address: string;
 	document_type: DocumentType;
 	dni_ruc: string;
-	state: boolean;
+	state: boolean;  
+	
 }
 
