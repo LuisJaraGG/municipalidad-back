@@ -13,13 +13,18 @@ const ServiceReceiptSchema = new Schema(
 			ref: 'Service',
 			required: [true, 'El servicio es obligatorio'],
 		},
+		months:{
+			type:Number
+		},
 		amount: {
 			type: Number,
 			required: [true, 'El monto es obligatorio'],
 		},
-		date:{
+		fromDate:{
 			type:String,
-			required:[true, 'La fecha de pago es  obligatoria']
+		},
+		toDate:{
+			type:String,
 		}
 	},
 	{

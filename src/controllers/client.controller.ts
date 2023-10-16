@@ -21,6 +21,16 @@ export const getClient = async (req: Request, res: Response) => {
 		return res.json({ message: 'Error interno del servidor' });
 	}
 };
+export const getClientByDni = async (req: Request, res: Response) => {
+	const { dni } = req.params;
+
+	try {
+		const client = await Client.findOne({'dni_ruc':dni}).lean();
+		return res.json(client);
+	} catch (error) {
+		return res.json({ message: 'Error interno del servidor' });
+	}
+};
 
 export const createClient = async (req: Request, res: Response) => {
 	const { name, email, phone, address, dni_ruc, document_type } = req.body;
