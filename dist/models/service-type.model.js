@@ -1,21 +1,24 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
+const interfaces_1 = require("../interfaces");
 const ServiceTypeSchema = new mongoose_1.Schema({
     name: {
         type: String,
         required: [true, 'El nombre es obligatorio'],
         trim: true,
         unique: true,
+        uppercase: true,
     },
     description: {
         type: String,
-        trim: true,
+        enum: interfaces_1.PaymentType,
+        required: [true, 'La descripcion debe ser obligatoria'],
     },
     state: {
         type: Boolean,
         default: true,
-    },
+    }
 }, {
     timestamps: true,
 });

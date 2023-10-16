@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteClient = exports.updateClient = exports.createClient = exports.getClient = exports.getClients = void 0;
+exports.deleteClient = exports.updateClient = exports.createClient = exports.getClientByDni = exports.getClient = exports.getClients = void 0;
 const models_1 = require("../models");
 const getClients = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -32,6 +32,17 @@ const getClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getClient = getClient;
+const getClientByDni = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { dni } = req.params;
+    try {
+        const client = yield models_1.Client.findOne({ 'dni_ruc': dni }).lean();
+        return res.json(client);
+    }
+    catch (error) {
+        return res.json({ message: 'Error interno del servidor' });
+    }
+});
+exports.getClientByDni = getClientByDni;
 const createClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, phone, address, dni_ruc, document_type } = req.body;
     try {

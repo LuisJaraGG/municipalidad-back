@@ -13,7 +13,7 @@ exports.deleteService = exports.updateService = exports.createService = exports.
 const models_1 = require("../models");
 const getServices = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const services = yield models_1.Service.find().populate('type', 'name').lean();
+        const services = yield models_1.Service.find().populate('type', 'name description').lean();
         return res.json(services);
     }
     catch (error) {
